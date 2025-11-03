@@ -9,7 +9,7 @@ class ResultScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // JSON pretty format
+   
     String prettyJson = const JsonEncoder.withIndent('  ').convert(data);
 
     return Scaffold(
