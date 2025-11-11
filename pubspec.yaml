@@ -14,6 +14,8 @@ dependencies:
   shared_preferences: ^2.2.2
   path_provider: ^2.0.14
   fluttertoast: ^8.2.4
+  url_launcher: ^6.2.6
+  fl_chart: ^0.68.0
 
 dev_dependencies:
   flutter_test:

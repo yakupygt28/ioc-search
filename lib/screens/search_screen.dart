@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
-import 'dart:convert';
-import 'result_screen.dart';
+import 'package:ios_search/screens/result_screen.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
@@ -12,61 +10,56 @@ class SearchScreen extends StatefulWidget {
 
 class _SearchScreenState extends State<SearchScreen> {
   final TextEditingController _controller = TextEditingController();
-  bool _loading = false;
 
-  Future<void> _searchDomain() async {
-    String domain = _controller.text.trim();
-    if (domain.isEmpty) return;
-
-    setState(() {
-      _loading = true;
-    });
-
-    final url = Uri.parse(
-      "http://api.crawlsnap.com/v1/ioc/search/domain?key=rw7xly8ph67bp8uhh62l8umce0akxs0hcwrn3ypzhzzpjz5hry&query=$domain&force=true",
-    );
-
-    final response = await http.get(url);
-    final data = json.decode(response.body);
-
-    setState(() {
-      _loading = false;
-    });
-
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ResultScreen(data: data, domain: domain),
-      ),
-    );
+  void _go() {
+    final domain = _controller.text.trim();
+    if (domain.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Lütfen domain girin')));
+      return;
+    }
+    final sanitized = domain.replaceAll(RegExp(r'https?://'), '').replaceAll(RegExp(r'/.*'), '');
+    Navigator.push(context, MaterialPageRoute(builder: (_) => ResultsScreen(domain: sanitized)));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("IOC Search"),
+        title: const Text('IOC Search'),
+        centerTitle: true,
+        elevation: 0,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24),
         child: Column(
           children: [
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: Theme.of(context).cardColor,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: const Text(
+                'Threat Intelligence Dashboard',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700, color: Color(0xFF96A0FF)),
+                textAlign: TextAlign.center,
+              ),
+            ),
+            const SizedBox(height: 24),
             TextField(
               controller: _controller,
               decoration: InputDecoration(
-                labelText: "Domain gir (ör: google.com)",
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+                filled: true,
+                fillColor: const Color(0xFF0B1620),
+                hintText: 'örn: me-doc.com',
+                suffixIcon: IconButton(icon: const Icon(Icons.search), onPressed: _go),
+                border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
               ),
+              onSubmitted: (_) => _go(),
             ),
-            const SizedBox(height: 20),
-            _loading
-                ? const CircularProgressIndicator()
-                : ElevatedButton(
-                    onPressed: _searchDomain,
-                    child: const Text("Ara"),
-                  )
+            const SizedBox(height: 12),
+            ElevatedButton.icon(onPressed: _go, icon: const Icon(Icons.arrow_forward), label: const Text('Ara')),
           ],
         ),
       ),

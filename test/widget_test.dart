@@ -1,20 +1,30 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:flutter/material.dart';
 import 'package:ios_search/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    
-    await tester.pumpWidget(const MyApp());
+  testWidgets('IOC Search app smoke test', (WidgetTester tester) async {
+    // Uygulamayı yükle
+    await tester.pumpWidget(const IocSearchApp());
 
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Ana ekrandaki IOC Search başlığını kontrol et
+    expect(find.text('IOC Search'), findsOneWidget);
 
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // TextField ve buton var mı kontrol et
+    expect(find.byType(TextField), findsOneWidget);
+    expect(find.byType(ElevatedButton), findsOneWidget);
 
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Butona tıkla ve TextField boş bırakılırsa hata mesajı çıkıyor mu
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump(); // UI güncellensin
+    expect(find.text('Domain girmeniz gerekiyor'), findsOneWidget);
+
+    // TextField'a bir domain yaz
+    await tester.enterText(find.byType(TextField), 'google.com');
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pumpAndSettle(); // Navigasyon tamamlanana kadar bekle
+
+    // Sonuç ekranına geçtiğini kontrol et
+    expect(find.textContaining('Sonuç: google.com'), findsOneWidget);
   });
 }
