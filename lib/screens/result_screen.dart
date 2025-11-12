@@ -1,4 +1,3 @@
-// lib/screens/result_screen.dart
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -55,7 +54,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
     return [];
   }
 
-  /// Güncellenmiş overall risk hesaplama (hassasiyet artırıldı)
+  
   String calculateRisk() {
     if (data == null) return 'N/A';
 
@@ -357,7 +356,7 @@ class _ResultsScreenState extends State<ResultsScreen> {
                     ),
 
                     const SizedBox(height: 18),
-                    // **Key Findings güncel**
+                    
                     Card(
                       child: Padding(
                         padding: const EdgeInsets.all(12.0),
